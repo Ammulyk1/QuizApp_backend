@@ -1,8 +1,6 @@
 import Questions from "../models/questionSchema.js";
 import Results from "../models/resultSchema.js";
-import questions, { answers } from '../database/data.js'
-
-/** get all questions */
+import questions, {answers} from '../database/data.js'
 export async function getQuestions(req, res){
     try {
         const q = await Questions.find();
@@ -11,29 +9,26 @@ export async function getQuestions(req, res){
         res.json({ error })
     }
 }
-
-/** insert all questinos */
-export async function insertQuestions(req, res){
+/**insert all questions */
+export async function insertQuestions(req, res) {
     try {
-        Questions.insertMany({ questions, answers }, function(err, data){
-            res.json({ msg: "Data Saved Successfully...!"})
-        })
+        await Questions.insertMany({ questions, answers});
+        res.json({ msg: "Data saved successfully..!" });
     } catch (error) {
-        res.json({ error })
+        res.json({ error });
     }
 }
-
-/** Delete all Questions */
+/** Delete all question */
 export async function dropQuestions(req, res){
-   try {
-        await Questions.deleteMany();
-        res.json({ msg: "Questions Deleted Successfully...!"});
-   } catch (error) {
-        res.json({ error })
-   }
-}
-
-/** get all result */
+    try {
+         await Questions.deleteMany();
+         res.json({ msg: "Questions Deleted Successfully...!"});
+    } catch (error) {
+         res.json({ error })
+    }
+ }
+ 
+/**get all result */
 export async function getResult(req, res){
     try {
         const r = await Results.find();
@@ -42,23 +37,20 @@ export async function getResult(req, res){
         res.json({ error })
     }
 }
+/**post ll result */
+export async function storeResult(req, res) {
+    try {
+        const { username, result, attempts, points, achieved } = req.body;
+        if (!username && !result) throw new Error('Data Not Provided...!');
 
-/** post all result */
-export async function storeResult(req, res){
-   try {
-        const { username, result, attempts, points, achived } = req.body;
-        if(!username && !result) throw new Error('Data Not Provided...!');
+        await Results.create({ username, result, attempts, points, achieved });
+        res.json({ msg: "Result Saved Successfully...!" });
 
-        Results.create({ username, result, attempts, points, achived }, function(err, data){
-            res.json({ msg : "Result Saved Successfully...!"})
-        })
-
-   } catch (error) {
-        res.json({error})
-   }
+    } catch (error) {
+        res.json({ error });
+    }
 }
-
-/** delete all result */
+/**delete all result */
 export async function dropResult(req, res){
     try {
         await Results.deleteMany();
